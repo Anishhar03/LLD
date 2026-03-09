@@ -1,0 +1,158 @@
+// ============================
+// Strategy Pattern - Single File
+// ============================
+// Strategy Pattern = “Define a family of algorithms, encapsulate each one, and make them interchangeable”
+// ---------- FLY STRATEGY ----------
+package design_patterns;
+interface FlyBehavior {
+    void fly();
+}
+
+// Concrete fly behavior
+class JetFly implements FlyBehavior {
+    @Override
+    public void fly() {
+        System.out.println("Flying using jet propulsion!");
+    }
+}
+
+// Another fly behavior
+class NoFly implements FlyBehavior {
+    @Override
+    public void fly() {
+        System.out.println("I cannot fly.");
+    }
+}
+
+// ---------- WALK STRATEGY ----------
+interface WalkBehavior {
+    void walk();
+}
+
+// Concrete walk behavior
+class NormalWalk implements WalkBehavior {
+    @Override
+    public void walk() {
+        System.out.println("Walking normally.");
+    }
+}
+
+// Another walk behavior
+class RoboWalk implements WalkBehavior {
+    @Override
+    public void walk() {
+        System.out.println("Walking with robotic movements.");
+    }
+}
+
+// ---------- TALK STRATEGY ----------
+interface TalkBehavior {
+    void talk();
+}
+
+// Concrete talk behavior
+class FriendlyTalk implements TalkBehavior {
+    @Override
+    public void talk() {
+        System.out.println("Hello human! Nice to meet you.");
+    }
+}
+
+// Another talk behavior
+class MilitaryTalk implements TalkBehavior {
+    @Override
+    public void talk() {
+        System.out.println("Target acquired. Awaiting commands.");
+    }
+}
+
+// ---------- PROJECTION STRATEGY ----------
+interface ProjectionBehavior {
+    void project();
+}
+
+// Concrete projection behavior
+class HologramProjection implements ProjectionBehavior {
+    @Override
+    public void project() {
+        System.out.println("Projecting 3D hologram.");
+    }
+}
+
+// Another projection behavior
+class NoProjection implements ProjectionBehavior {
+    @Override
+    public void project() {
+        System.out.println("No projection capability.");
+    }
+}
+
+// ---------- CONTEXT CLASS ----------
+class Robot {
+
+    // Robot HAS-A behavior (composition)
+    private FlyBehavior flyBehavior;
+    private WalkBehavior walkBehavior;
+    private TalkBehavior talkBehavior;
+    private ProjectionBehavior projectionBehavior;
+
+    // Constructor injects strategies
+    Robot(FlyBehavior flyBehavior,
+          WalkBehavior walkBehavior,
+          TalkBehavior talkBehavior,
+          ProjectionBehavior projectionBehavior) {
+
+        this.flyBehavior = flyBehavior;
+        this.walkBehavior = walkBehavior;
+        this.talkBehavior = talkBehavior;
+        this.projectionBehavior = projectionBehavior;
+    }
+
+    // Delegation to strategy objects
+    void performFly() {
+        flyBehavior.fly();
+    }
+
+    void performWalk() {
+        walkBehavior.walk();
+    }
+
+    void performTalk() {
+        talkBehavior.talk();
+    }
+
+    void performProjection() {
+        projectionBehavior.project();
+    }
+
+    // Behavior can be changed at runtime
+    void setFlyBehavior(FlyBehavior flyBehavior) {
+        this.flyBehavior = flyBehavior;
+    }
+}
+
+// ---------- CLIENT ----------
+public class StrategyPatternRobotDemo {
+
+    public static void main(String[] args) {
+
+        // Create a robot with specific behaviors
+        Robot combatRobot = new Robot(
+                new JetFly(),
+                new RoboWalk(),
+                new MilitaryTalk(),
+                new HologramProjection()
+        );
+
+        // Execute behaviors
+        combatRobot.performFly();
+        combatRobot.performWalk();
+        combatRobot.performTalk();
+        combatRobot.performProjection();
+
+        // Change behavior dynamically at runtime
+        System.out.println("\n-- Upgrading Robot --");
+        combatRobot.setFlyBehavior(new NoFly());
+        combatRobot.performFly();
+    }
+}
